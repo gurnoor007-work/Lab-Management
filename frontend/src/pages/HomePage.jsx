@@ -1,7 +1,8 @@
 import React from 'react'
+import { Navbar } from '../components/Navbar/Navbar';
 
 export const HomePage = () => {
     return (
-        <div className="flex items-center justify-center bg-amber-400 h-full"><span>Lab Management</span></div>
+        <div className="min-h-screen"><div className="flex justify-center pt-4"><Navbar /></div></div>
     )
 }
