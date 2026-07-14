@@ -9,7 +9,7 @@ export const Navbar = () => {
       <div className="flex items-center justify-between px-6 py-4">
         <div className="logo-portion flex items-center gap-4">
           <Logo />
-          <div className="h-11 w-0.5 bg-[#D1D5DB]"></div>
+          <div className="h-15 w-0.5 bg-[#D1D5DB]"></div>
         </div>
         <div className="user-account">
           {/* <UserDisplay /> */}
