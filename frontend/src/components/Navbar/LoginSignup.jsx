@@ -1,6 +1,8 @@
 import React from 'react'
+import {useNavigate} from "react-router-dom"
 
 export const LoginSignup = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-row justify-around w-fit gap-4">
       <button
@@ -24,6 +26,7 @@ export const LoginSignup = () => {
 
     cursor-pointer
   "
+  onClick={() => navigate("/login")}
       >
         Login
       </button>
@@ -48,6 +51,7 @@ export const LoginSignup = () => {
 
     cursor-pointer
   "
+  onClick={() => navigate("/signup")}
       >
         Sign Up
       </button>
