@@ -1,4 +1,5 @@
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import InvalidToken
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,6 +18,6 @@ class Authentication(JWTAuthentication):
             user = self.get_user(validated_token)
             logger.info("User authenticated: %s", user.id)
             return (user, validated_token)
-        except Exception:
+        except InvalidToken:
             logger.exception("Authentication error")
             return None

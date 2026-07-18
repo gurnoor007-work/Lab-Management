@@ -83,16 +83,17 @@ class RefreshTokenView(TokenRefreshView):
 
             response = super().post(request, *args, **kwargs)
             tokens = response.data
+            logger.info("Gurnoor tokens: ", response.data)
 
             access_token = tokens["access"]
-            refresh_token = tokens["refresh"]
+            refresh_token = request.COOKIES.get("refresh_token")
 
             res = Response(
                 {"message": "Token Refresh Successful", "success": True},
                 status=status.HTTP_200_OK,
             )
             res.data = {"refresh": True}
-            logger.info("Tokens refreshed for %s", request.user["username"])
+            logger.info("Tokens refreshed for %s", request.user.username)
 
             set_auth_cookies(res, access_token, refresh_token)
             return res
@@ -111,7 +112,7 @@ def logout(request):
     try:
         res = Response(
             {
-                "message": f"Logout Successful for user: {request.user["username"]}",
+                "message": f"Logout Successful for user: {request.user.username}",
                 "success": True,
             },
             status=status.HTTP_200_OK,
@@ -124,7 +125,7 @@ def logout(request):
         clear_auth_cookies(res)
         return res
     except Exception as e:
-        logger.exception("Logout failed for %s", request.user["username"])
+        logger.exception("Logout failed for %s", request.user.username)
         return Response(
             {"message": "Logout Failed", "success": False},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -136,7 +137,7 @@ def logout(request):
 @permission_classes([IsAuthenticated])
 def fetch_user(request):
     serializer = UserSerializer(request.user)
-    logger.info("Sending user info for %s", request.user["username"])
+    logger.info("Sending user info for %s", request.user.username)
     return Response(
         {"user_data": serializer.data, "success": True}, status=status.HTTP_200_OK
     )
@@ -146,7 +147,7 @@ def fetch_user(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def is_authenticated(request):
-    logger.info("User %s is authenticated", request.user["username"])
+    logger.info("User %s is authenticated", request.user.username)
     return Response(
         {"message": "User Authenticated", "success": True}, status=status.HTTP_200_OK
     )
