@@ -3,6 +3,8 @@ from ..utils.cookies import set_auth_cookies, clear_auth_cookies
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
+from rest_framework.exceptions import AuthenticationFailed
+
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
@@ -66,6 +68,11 @@ class LoginView(TokenObtainPairView):
 
             set_auth_cookies(res, access_token, refresh_token)
             return res
+        except AuthenticationFailed:
+            return Response(
+                {"message": "Invalid email or password", "success": False},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
         except Exception:
             logger.exception("Log in failed")
             return Response(
