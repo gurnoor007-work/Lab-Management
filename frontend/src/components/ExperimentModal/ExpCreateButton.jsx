@@ -1,8 +1,19 @@
 import React from "react";
+import API from "../../api";
 
 export const ExpCreateButton = ({ data }) => {
     const handleClick = async () => {
         console.log(data);
+        try {
+            const resp = API.post("api/experiment/chemistry/create/", data);
+            if (resp.status === 201) {
+                alert("model created successfully");
+                return;
+            }
+        } catch (err) {
+            console.log("error: ", err.response?.data);
+            return;
+        }
     };
     return (
         <button
