@@ -1,6 +1,8 @@
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
+from django.forms.models import model_to_dict
+
 from rest_framework.response import Response
 
 from ..models import Experiment, ChemistryDetails

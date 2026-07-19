@@ -11,7 +11,7 @@ from rest_framework import status
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from ..serializers import RegisterUserSerializer, UserSerializer
+from .serializers.serializers import RegisterUserSerializer, UserSerializer
 
 import logging
 

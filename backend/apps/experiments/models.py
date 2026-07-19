@@ -14,9 +14,9 @@ class Experiment(models.Model):
         blank=True,
         related_name="user_experiment",
     )
-    title = models.CharField(max_length=100)
-    course = models.CharField(max_length=200)
-    supervisor = models.CharField(max_length=200)
+    title = models.CharField(max_length=100, blank=True)
+    course = models.CharField(max_length=200, blank=True)
+    supervisor = models.CharField(max_length=200, blank=True)
     date = models.DateField(default=timezone.now)
     lab_group = models.CharField(max_length=100, blank=True)
     location = models.CharField(max_length=200, blank=True)

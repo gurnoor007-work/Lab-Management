@@ -8,7 +8,7 @@ export const Signup = () => {
     const [password, setPassword] = useState("");
 
     const [showPassword, setShowPassword] = useState(false);
-    const { signup } = useAuth();
+    const { signup, signupErrors, clearSignupError } = useAuth();
 
     return (
         <div className="h-screen flex items-center justify-center">
@@ -18,60 +18,84 @@ export const Signup = () => {
                     <hr className="border-[#D1D5DB] my-2" />
                 </div>
                 <div className="input-boxes flex flex-col gap-3">
-                    <div>
+                    <div className="signup-email flex flex-col">
                         <label htmlFor="email" className="text-md font-medium text-gray-700 mb-0.5">
                             Email Address
                         </label>
 
-                        <input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="example@gmail.com"
-                            className="
-                                        w-full
-                                        rounded-lg
-                                        border border-gray-300
-                                        px-4 py-3
-                                        text-gray-900
-                                        placeholder:text-gray-400
-                                        outline-none
-                                        transition
-                                        focus:border-blue-500
-                                        focus:ring-2
-                                        focus:ring-blue-200
-                                      "
-                        />
+                        <div className="relative flex flex-row gap-4 items-center">
+                            <input
+                                id="email"
+                                type="email"
+                                value={email}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    clearSignupError("email");
+                                }}
+                                placeholder="example@gmail.com"
+                                className={`
+                                            w-full
+                                            rounded-lg
+                                            px-4 py-3
+                                            text-gray-900
+                                            placeholder:text-gray-400
+                                            outline-none
+                                            transition
+                                            focus:border-blue-500
+                                            focus:ring-2
+                                            focus:ring-blue-200
+                                          ${signupErrors.email ? "border border-red-500" : "border border-gray-300"}`}
+                            />
+                            {signupErrors.email && (
+                                <div className="absolute left-full ml-3 whitespace-nowrap rounded-md bg-red-500 px-3 py-2 text-sm text-white shadow-md">
+                                    {signupErrors.email[0]}
+                                </div>
+                            )}
+                        </div>
                     </div>
-                    <div>
-                        <label htmlFor="email" className="text-md font-medium text-gray-700 mb-0.5">
+                    <div className="signup-username">
+                        <label
+                            htmlFor="username"
+                            className="text-md font-medium text-gray-700 mb-0.5"
+                        >
                             Username
                         </label>
 
-                        <input
-                            id="username"
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="albert-einstein"
-                            className="
-                                        w-full
-                                        rounded-lg
-                                        border border-gray-300
-                                        px-4 py-3
-                                        text-gray-900
-                                        placeholder:text-gray-400
-                                        outline-none
-                                        transition
-                                        focus:border-blue-500
-                                        focus:ring-2
-                                        focus:ring-blue-200
-                                      "
-                        />
+                        <div className="relative flex flex-row gap-4 items-center">
+                            <input
+                                id="username"
+                                type="text"
+                                value={username}
+                                onChange={(e) => {
+                                    setUsername(e.target.value);
+                                    clearSignupError("username");
+                                }}
+                                placeholder="albert-einstein"
+                                className={`
+                                                w-full
+                                                rounded-lg
+                                                px-4 py-3
+                                                text-gray-900
+                                                placeholder:text-gray-400
+                                                outline-none
+                                                transition
+                                                focus:border-blue-500
+                                                focus:ring-2
+                                                focus:ring-blue-200
+                                              ${signupErrors.email ? "border border-red-500" : "border border-gray-300"}`}
+                            />
+                            {signupErrors.username && (
+                                <div className="absolute left-full ml-3 whitespace-nowrap rounded-md bg-red-500 px-3 py-2 text-sm text-white shadow-md">
+                                    {signupErrors.username[0]}
+                                </div>
+                            )}
+                        </div>
                     </div>
-                    <div>
-                        <label htmlFor="email" className="text-md font-medium text-gray-700 mb-0.5">
+                    <div className="signup-password">
+                        <label
+                            htmlFor="password"
+                            className="text-md font-medium text-gray-700 mb-0.5"
+                        >
                             Password
                         </label>
 

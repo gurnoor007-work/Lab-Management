@@ -9,6 +9,9 @@ export const AuthProvider = ({ children }) => {
     const [loggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
 
+    const [signupErrors, setSignupErrors] = useState({});
+    const [loginError, setLoginError] = useState(false);
+
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -24,18 +27,19 @@ export const AuthProvider = ({ children }) => {
             }
         } catch (err) {
             if (err.response?.status === 400) {
-                const errors = err.response.data;
-                let alert_message = "";
-
-                Object.entries(errors).forEach(([key, values]) => {
-                    alert_message += `${key}: ${values}\n`;
-                });
-                alert(alert_message);
+                setSignupErrors(err.response.data);
             }
             if (err.response.status === 500) {
                 alert("Server error. Please try again later.");
             }
         }
+    };
+    const clearSignupError = (field) => {
+        setSignupErrors((prev) => {
+            const copy = { ...prev };
+            delete copy[field];
+            return copy;
+        });
     };
 
     // login function
@@ -45,15 +49,24 @@ export const AuthProvider = ({ children }) => {
             if (resp.status === 200) {
                 setIsLoggedIn(true);
                 await fetchUser();
-                navigate(-1);
+                navigate("/");
                 console.log({ message: "Login Successful" });
             }
         } catch (err) {
-            console.log({
-                message: "Login Error",
-                error: err.response?.data || "An error occured",
-            });
+            const error = err.response?.data;
+            if (err.response?.status === 401) {
+                if (error.message === "Invalid email or password") {
+                    setLoginError(true);
+                }
+            }
         }
+    };
+    const clearLoginError = () => {
+        setLoginError((prev) => {
+            if (prev) {
+                return !prev;
+            }
+        });
     };
 
     // logout function
@@ -99,7 +112,7 @@ export const AuthProvider = ({ children }) => {
             if (resp.status === 200 && resp.data) {
                 setUser(resp.data);
                 setIsLoggedIn(true);
-                console.log("user: ", user)
+                console.log("user: ", user);
             }
         } catch {
             console.log({ message: "Fetch user failed" });
@@ -145,6 +158,10 @@ export const AuthProvider = ({ children }) => {
                 logout,
                 fetchUser,
                 getAuthenticated,
+                signupErrors,
+                clearSignupError,
+                loginError,
+                clearLoginError
             }}
         >
             {children}
