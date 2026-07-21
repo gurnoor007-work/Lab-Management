@@ -1,13 +1,15 @@
 import React from "react";
 import API from "../../api";
+import { useNavigate } from "react-router-dom";
 
 export const ExpCreateButton = ({ data }) => {
+    const navigate = useNavigate();
     const handleClick = async () => {
         console.log(data);
         try {
-            const resp = API.post("api/experiment/chemistry/create/", data);
+            const resp = API.post("api/experiments/chemistry/create/", data);
             if (resp.status === 201) {
-                alert("model created successfully");
+                navigate(`/experiment/chemistry/${resp.data.id}`);
                 return;
             }
         } catch (err) {

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from ...models import Experiment, ChemistryDetails
 
+
 class CreateChemistryExperimentSerializer(serializers.Serializer):
     title = serializers.CharField()
     course = serializers.CharField()
@@ -32,3 +33,17 @@ class CreateChemistryExperimentSerializer(serializers.Serializer):
         )
 
         return experiment
+
+
+class ChemistryDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChemistryDetails
+        fields = "__all__"
+
+
+class ChemistryExperimentSerializer(serializers.ModelSerializer):
+    chemistry = ChemistryDetailsSerializer(read_only=True)
+
+    class Meta:
+        model = Experiment
+        fields = "__all__"
