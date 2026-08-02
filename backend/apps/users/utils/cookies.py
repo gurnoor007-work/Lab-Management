@@ -1,5 +1,3 @@
-
-
 def set_auth_cookies(response, access_token, refresh_token):
     response.set_cookie(
         key="access_token",
@@ -21,5 +19,5 @@ def set_auth_cookies(response, access_token, refresh_token):
 
 
 def clear_auth_cookies(response):
-    response.delete_cookie("access_token", path="/")
-    response.delete_cookie("refresh_token", path="/")
+    response.delete_cookie("access_token", path="/", samesite="None")
+    response.delete_cookie("refresh_token", path="/", samesite="None")

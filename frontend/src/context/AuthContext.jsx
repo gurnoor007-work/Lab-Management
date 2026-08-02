@@ -137,6 +137,13 @@ export const AuthProvider = ({ children }) => {
                 } else {
                     setIsLoggedIn(false);
                     setUser(null);
+                    if (
+                        location.pathname != "/login" &&
+                        location.pathname != "/signup" &&
+                        location.pathname != "/"
+                    ) {
+                        navigate("/login");
+                    }
                 }
             }
         }
@@ -161,7 +168,7 @@ export const AuthProvider = ({ children }) => {
                 signupErrors,
                 clearSignupError,
                 loginError,
-                clearLoginError
+                clearLoginError,
             }}
         >
             {children}

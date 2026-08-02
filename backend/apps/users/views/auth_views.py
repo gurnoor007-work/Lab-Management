@@ -7,6 +7,7 @@ from rest_framework.exceptions import AuthenticationFailed
 
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework import status
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -114,7 +115,7 @@ class RefreshTokenView(TokenRefreshView):
 
 # Logout View
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def logout(request):
     try:
         res = Response(
@@ -126,8 +127,12 @@ def logout(request):
         )
         # blacklisting the refresh token
         refresh_token = request.COOKIES.get("refresh_token")
-        token = RefreshToken(refresh_token)
-        token.blacklist()
+        if refresh_token:
+            try:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+            except TokenError:
+                pass
 
         clear_auth_cookies(res)
         return res

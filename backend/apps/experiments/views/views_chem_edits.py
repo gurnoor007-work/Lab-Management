@@ -1,41 +1,18 @@
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from django.forms.models import model_to_dict
-
 from rest_framework.response import Response
 from rest_framework import status
 
-from ..models import Experiment, ChemistryDetails
+from ..models import Experiment
 from .serializers.serializers_chem import (
-    CreateChemistryExperimentSerializer,
     ExperimentSerializer,
 )
 
 
-@api_view(["POST"])
+@api_view(["PATCH"])
 @permission_classes([IsAuthenticated])
-def create_chem_exp(request):
-    serializer = CreateChemistryExperimentSerializer(
-        data=request.data, context={"request": request}
-    )
-
-    serializer.is_valid(raise_exception=True)
-    experiment = serializer.save()
-
-    return Response(
-        {
-            "id": experiment.id,
-            "message": "Experiment created successfully",
-            "success": True,
-        },
-        status=status.HTTP_201_CREATED,
-    )
-
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def get_chem_exp(request, id):
+def change_field(request, id):
     try:
         experiment = Experiment.objects.get(id=id)
     except Experiment.DoesNotExist:
@@ -50,11 +27,19 @@ def get_chem_exp(request, id):
             status=status.HTTP_403_FORBIDDEN,
         )
 
-    serializer = ExperimentSerializer(experiment)
+    serializer = ExperimentSerializer(
+        experiment,
+        data=request.data,
+        partial=True,
+    )
+
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
 
     return Response(
         {
             "success": True,
+            "message": "Experiment updated successfully",
             "data": serializer.data,
         },
         status=status.HTTP_200_OK,

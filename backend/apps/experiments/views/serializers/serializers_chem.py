@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from ...models import Experiment, ChemistryDetails
+from django.utils import timezone
 
 
 class CreateChemistryExperimentSerializer(serializers.Serializer):
@@ -41,9 +42,39 @@ class ChemistryDetailsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ChemistryExperimentSerializer(serializers.ModelSerializer):
-    chemistry = ChemistryDetailsSerializer(read_only=True)
+class ExperimentSerializer(serializers.ModelSerializer):
+    chemistry = ChemistryDetailsSerializer()
 
     class Meta:
         model = Experiment
         fields = "__all__"
+        read_only_fields = (
+            "id",
+            "owner",
+            "created_at",
+            "updated_at",
+        )
+
+    def update(self, instance, validated_data):
+        chemistry_data = validated_data.pop("chemistry", None)
+
+        # Update Experiment fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+
+        # Update ChemistryDetails
+        if chemistry_data:
+            chemistry = instance.chemistry
+
+            for attr, value in chemistry_data.items():
+                setattr(chemistry, attr, value)
+
+                if attr == "procedure":
+                    value["updated_at"] = timezone.now().isoformat()
+                setattr(chemistry, attr, value)
+
+            chemistry.save()
+
+        return instance
