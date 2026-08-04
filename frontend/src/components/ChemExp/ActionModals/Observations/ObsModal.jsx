@@ -39,7 +39,7 @@ export const ObsModal = ({
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto pb-6">
+                <div className="flex-1 min-h-0 px-8 py-6">
                     <DataTable />
                 </div>
 
@@ -47,14 +47,14 @@ export const ObsModal = ({
                 <div className="flex justify-end gap-3 border-t border-gray-200 px-8 py-5 shrink-0">
                     <button
                         onClick={onClose}
-                        className="rounded-lg border border-gray-300 px-5 py-2 font-medium text-gray-700 transition hover:bg-gray-100 hover:cursor-pointer"
+                        className="rounded-lg border border-gray-300 px-5 py-2 font-medium text-gray-700 transition hover:bg-gray-100"
                     >
                         Close
                     </button>
 
                     <button
                         onClick={handleSubmit}
-                        className="rounded-lg bg-blue-600 px-5 py-2 font-medium text-white transition hover:bg-blue-700 hover:cursor-pointer"
+                        className="rounded-lg bg-blue-600 px-5 py-2 font-medium text-white transition hover:bg-blue-700"
                     >
                         Save
                     </button>

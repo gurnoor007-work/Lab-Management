@@ -78,39 +78,39 @@ export const DataTable = ({
     };
 
     return (
-        <div className="flex flex-col gap-4 px-6">
-            {/* Controls */}
-            <div className="flex gap-2 shrink-0 sticky top-0 z-30 bg-white rounded-b-xl pb-4 pt-6">
+        <div className="flex h-full min-h-0 flex-col gap-4">
+            {/* Toolbar */}
+            <div className="flex gap-2 shrink-0">
                 <button
                     onClick={addColumn}
-                    className="rounded-lg border border-gray-300 px-4 py-2 transition hover:bg-gray-100 hover:cursor-pointer"
+                    className="rounded-lg border border-gray-300 px-4 py-2 transition hover:bg-gray-100"
                 >
                     + Column
                 </button>
 
                 <button
                     onClick={addRow}
-                    className="rounded-lg border border-gray-300 px-4 py-2 transition hover:bg-gray-100 hover:cursor-pointer"
+                    className="rounded-lg border border-gray-300 px-4 py-2 transition hover:bg-gray-100"
                 >
                     + Row
                 </button>
             </div>
 
-            {/* Table */}
-            <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white w-fit ">
+            {/* Scrollable Table Area */}
+            <div className="flex-1 min-h-0 overflow-auto rounded-xl border border-gray-200 bg-white">
                 <table className="min-w-max border-collapse">
-                    <thead >
+                    <thead>
                         <tr>
                             {tableData.columns.map((column, colIndex) => (
                                 <th
                                     key={colIndex}
                                     className="
+                                        sticky top-0 z-20
+                                        bg-gray-50
                                         group
                                         min-w-[220px]
-                                        border-r
-                                        border-b
+                                        border-r border-b
                                         border-gray-200
-                                        bg-gray-50
                                         p-0
                                         last:border-r-0
                                     "
@@ -128,8 +128,7 @@ export const DataTable = ({
                                             className="
                                                 w-full
                                                 bg-transparent
-                                                px-4
-                                                py-3
+                                                px-4 py-3
                                                 font-semibold
                                                 text-gray-700
                                                 outline-none
@@ -142,9 +141,6 @@ export const DataTable = ({
                                             }
                                             className="
                                                 mr-2
-                                                flex
-                                                items-center
-                                                justify-center
                                                 rounded-md
                                                 p-1.5
                                                 text-red-500
@@ -155,13 +151,20 @@ export const DataTable = ({
                                                 group-hover:opacity-100
                                             "
                                         >
-                                            <Trash2 className="h-[1em] w-[1em]" />
+                                            <Trash2 size="1em" />
                                         </button>
                                     </div>
                                 </th>
                             ))}
 
-                            <th className="w-12 border-b border-gray-200 bg-gray-50" />
+                            <th
+                                className="
+                                    sticky top-0 z-20
+                                    bg-gray-50
+                                    w-12
+                                    border-b border-gray-200
+                                "
+                            />
                         </tr>
                     </thead>
 
@@ -169,15 +172,14 @@ export const DataTable = ({
                         {tableData.rows.map((row, rowIndex) => (
                             <tr
                                 key={rowIndex}
-                                className="group transition-colors hover:bg-gray-50"
+                                className="group hover:bg-gray-50 transition-colors"
                             >
                                 {row.map((cell, colIndex) => (
                                     <td
                                         key={colIndex}
                                         className="
                                             min-w-[220px]
-                                            border-r
-                                            border-b
+                                            border-r border-b
                                             border-gray-200
                                             p-0
                                             last:border-r-0
@@ -196,8 +198,7 @@ export const DataTable = ({
                                             className="
                                                 w-full
                                                 bg-transparent
-                                                px-4
-                                                py-3
+                                                px-4 py-3
                                                 text-gray-700
                                                 outline-none
                                             "
@@ -219,7 +220,7 @@ export const DataTable = ({
                                             group-hover:opacity-100
                                         "
                                     >
-                                        <Trash2 className="h-[1em] w-[1em]" />
+                                        <Trash2 size="1em" />
                                     </button>
                                 </td>
                             </tr>
