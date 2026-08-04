@@ -69,11 +69,19 @@ class ExperimentSerializer(serializers.ModelSerializer):
             chemistry = instance.chemistry
 
             for attr, value in chemistry_data.items():
-                setattr(chemistry, attr, value)
 
-                if attr == "procedure":
-                    value["updated_at"] = timezone.now().isoformat()
-                setattr(chemistry, attr, value)
+                # Handle JSONField partial updates
+                if attr == "procedure" and isinstance(value, dict):
+                    current_procedure = chemistry.procedure or {}
+
+                    current_procedure.update(value)
+
+                    current_procedure["updated_at"] = timezone.now().isoformat()
+
+                    setattr(chemistry, "procedure", current_procedure)
+
+                else:
+                    setattr(chemistry, attr, value)
 
             chemistry.save()
 

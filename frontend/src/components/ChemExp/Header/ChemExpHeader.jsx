@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import chem_logo from "../../../assets/Logo.png";
 import {
     NotebookTabs,
@@ -17,9 +17,16 @@ import { ExpInfoTag } from "./ExpInfoTag";
 
 import { useExpData } from "../../../context/ExpDataContext";
 import { StatusCard } from "../../StatusCards/Status";
+import { useParams } from "react-router-dom";
+
+import API from "../../../api";
 
 export const ChemExpHeader = () => {
+    const statusList = ["draft", "ongoing", "completed"];
     const { expData } = useExpData();
+    const [expStatus, setExpStatus] = useState(statusList.indexOf(expData.status));
+    const { id } = useParams();
+
     const data = expData;
 
     const formatDate = (dateString) => {
@@ -28,8 +35,21 @@ export const ChemExpHeader = () => {
         }
         return format(new Date(dateString), "do MMMM, yyyy");
     };
+
+    const handleStatus = async () => {
+        try {
+            const resp = await API.patch(`api/experiments/chemistry/edit/${id}`, {
+                status: statusList[(expStatus + 1) % statusList.length],
+            });
+            if (resp.status === 200) {
+                setExpStatus((prev) => (prev + 1) % statusList.length);
+            }
+        } catch (err) {
+            console.log({ status: err.response?.status, error: err.response?.data });
+        }
+    };
+
     console.log(data);
-    const status = data.status;
 
     return (
         <div className="flex items-center w-screen bg-amber-2 pt-10 pb-4 px-10">
@@ -64,8 +84,14 @@ export const ChemExpHeader = () => {
                                 val={data.location}
                                 field="location"
                             />
-                            <div className="">
-                                <StatusCard status={expData.status} />
+                            <div
+                                className="hover:scale-105 transition duration-300 hover:cursor-pointer"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleStatus();
+                                }}
+                            >
+                                <StatusCard status={statusList[expStatus]} />
                             </div>
                         </div>
                     </div>

@@ -6,31 +6,23 @@ import { ActionCard } from "../../../components/ChemExp/ActionCard";
 
 import { useExpData } from "../../../context/ExpDataContext";
 
-import { ClipboardList, CheckCircle2, ListChecks } from "lucide-react";
+import { ClipboardList, CheckCircle2, ListChecks, Eye } from "lucide-react";
 import { ProcedureModal } from "../../../components/ChemExp/ActionModals/Procedure/ProcedureModal";
 import { NoPreviewAvailable } from "../NoPreviewAvailable";
 import { StatusCard } from "../../../components/StatusCards/Status";
+import { ObsModal } from "../../../components/ChemExp/ActionModals/Observations/ObsModal";
 
 export const ChemExpPage = () => {
     const { expData, notFound, forbidden, loading } = useExpData();
     const { id } = useParams();
 
     const [showProcedure, setShowProcedure] = useState(false);
+    const [showObs, setShowObs] = useState(false);
+
     const [procedureStatus, setProcedureStatus] = useState(0);
-    const containerRef = useRef(null);
-
-    useEffect(() => {
-        const handleOutsideClick = (event) => {
-            if (containerRef.current && !containerRef.current.contains(event.target)) {
-                setShowProcedure(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleOutsideClick);
-        return () => {
-            document.removeEventListener("mousedown", handleOutsideClick);
-        };
-    }, []);
+    const [obsStatus, setObsStatus] = useState(0);
+    const procedureRef = useRef(null);
+    const obsRef = useRef(null);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -60,7 +52,7 @@ export const ChemExpPage = () => {
     const previewCount = 5;
 
     const statusList = ["draft", "ongoing", "completed"];
-    const handleStatus = async () => {
+    const handleProcedureStatus = async () => {
         try {
             const resp = await API.patch(`api/experiments/chemistry/edit/${id}`, {
                 chemistry: {
@@ -76,6 +68,22 @@ export const ChemExpPage = () => {
             console.log({ status: err.response?.status, error: err.response?.data });
         }
     };
+    const handleObsStatus = async () => {
+        try {
+            const resp = await API.patch(`api/experiments/chemistry/edit/${id}`, {
+                chemistry: {
+                    observations: {
+                        status: statusList[(procedureStatus + 1) % statusList.length],
+                    },
+                },
+            });
+            if (resp.status === 200) {
+                setObsStatus((prev) => (prev + 1) % statusList.length);
+            }
+        } catch (err) {
+            console.log({ status: err.response?.status, error: err.response?.data });
+        }
+    };
 
     return (
         <div className="chem-exp flex flex-col items-center">
@@ -83,6 +91,7 @@ export const ChemExpPage = () => {
                 <ChemExpHeader />
             </div>
             <div className="cards grid grid-cols-3 gap-5 w-[75%]">
+                {/* ==========Procedure========== */}
                 <ActionCard
                     icon={
                         <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center shadow-xs">
@@ -92,8 +101,11 @@ export const ChemExpPage = () => {
                     title={<span className="text-2xl font-semibold text-gray-600">Procedure</span>}
                     title_status={
                         <div
-                            className="hover:scale-105 transition duration-300"
-                            onClick={handleStatus("procedure")}
+                            className="z-10 hover:scale-105 transition duration-300"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleProcedureStatus();
+                            }}
                         >
                             <StatusCard status={statusList[procedureStatus]} />
                         </div>
@@ -158,8 +170,8 @@ export const ChemExpPage = () => {
                 />
                 {showProcedure && (
                     <ProcedureModal
+                        open={showProcedure}
                         onClose={() => setShowProcedure(false)}
-                        containerRef={containerRef}
                         icon={
                             <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center shadow-xs">
                                 <ClipboardList className="w-7 h-7 text-blue-600" />
@@ -176,7 +188,65 @@ export const ChemExpPage = () => {
                         }
                     />
                 )}
-                <ActionCard />
+
+                {/* ==========Observations========== */}
+                <ActionCard
+                    icon={
+                        <div className="w-14 h-14 rounded-xl bg-green-50 flex items-center justify-center shadow-xs">
+                            <Eye className="w-7 h-7 text-green-600" />
+                        </div>
+                    }
+                    title={
+                        <span className="text-2xl font-semibold text-gray-600">Observations</span>
+                    }
+                    title_status={
+                        <div
+                            className="z-10 hover:scale-105 transition duration-300"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleObsStatus();
+                            }}
+                        >
+                            <StatusCard status={statusList[obsStatus]} />
+                        </div>
+                    }
+                    preview_elem={<div className="flex flex-col gap-5"></div>}
+                    bottom_summary={
+                        <div className="w-full flex justify-between">
+                            <div className="left-portion flex flex-row gap-2 items-center text-md text-gray-700">
+                                <ListChecks size="1em" />
+                                <span className="text-sm">
+                                    {procedureSummary.items.length} steps
+                                </span>
+                            </div>
+                            <div className="right-portion flex flex-col gap-1">
+                                <span className="text-xs text-gray-400">Last Updated</span>
+                                <span className="text-sm text-gray-700">
+                                    {formatDateTime(expData.updated_at)}
+                                </span>
+                            </div>
+                        </div>
+                    }
+                    setShowModal={setShowObs}
+                />
+                {showObs && (
+                    <ObsModal
+                        open={showObs}
+                        onClose={() => setShowObs(false)}
+                        containerRef={obsRef}
+                        icon={
+                            <div className="w-14 h-14 rounded-xl bg-green-50 flex items-center justify-center shadow-xs">
+                                <Eye className="w-7 h-7 text-green-600" />
+                            </div>
+                        }
+                        title={
+                            <span className="text-2xl font-semibold text-gray-600">
+                                Observations
+                            </span>
+                        }
+                        title_status={<StatusCard status={statusList[obsStatus]} />}
+                    />
+                )}
                 <ActionCard />
                 <ActionCard />
                 <ActionCard />
