@@ -97,7 +97,7 @@ export const DataTable = ({
             </div>
 
             {/* Scrollable Table Area */}
-            <div className="flex-1 min-h-0 overflow-auto rounded-xl border border-gray-200 bg-white">
+            <div className="flex-1 min-h-0 overflow-auto rounded-xl border border-gray-200 bg-white w-fit max-w-full">
                 <table className="min-w-max border-collapse">
                     <thead>
                         <tr>

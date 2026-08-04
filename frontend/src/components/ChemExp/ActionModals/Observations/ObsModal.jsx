@@ -1,30 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { DataTable } from "../../../DataTable";
+import API from "../../../../api";
+import { useParams } from "react-router-dom";
+import { useExpData } from "../../../../context/ExpDataContext";
 
-export const ObsModal = ({
-    open,
-    onClose,
-    icon,
-    title,
-    title_status,
-}) => {
-    const handleSubmit = () => {};
+export const ObsModal = ({ open, onClose, icon, title, title_status }) => {
+    const { id } = useParams();
+    const { expData, setExpData } = useExpData();
+    const [obsData, setObsData] = useState(expData.chemistry.observations);
+
+    const handleSubmit = async () => {
+        try {
+            const resp = await API.patch(`api/experiments/chemistry/edit/${id}`, {
+                chemistry: {
+                    observations: obsData,
+                },
+            });
+
+            if (resp.status === 200) {
+                setExpData((prev) => ({
+                    ...prev,
+                    chemistry: {
+                        ...prev.chemistry,
+                        observations: obsData,
+                    },
+                }));
+            }
+        } catch (err) {
+            console.log({ status: err.response?.status, error: err.response?.data });
+        } finally {
+            window.location.reload();
+        }
+    };
 
     return createPortal(
         <div
             className={`fixed inset-0 z-50 flex items-center justify-center ${
-                open
-                    ? "visible bg-black/20 backdrop-blur-xs"
-                    : "invisible"
+                open ? "visible bg-black/20 backdrop-blur-xs" : "invisible"
             }`}
             onClick={onClose}
         >
             <div
                 className={`w-4xl h-[75vh] rounded-2xl bg-white shadow-2xl flex flex-col transition-all duration-200 ${
-                    open
-                        ? "opacity-100 scale-100"
-                        : "opacity-0 scale-110"
+                    open ? "opacity-100 scale-100" : "opacity-0 scale-110"
                 }`}
                 onClick={(e) => e.stopPropagation()}
             >

@@ -67,6 +67,7 @@ export const ProcedureModal = ({ open, onClose, icon, title, title_status }) => 
                 setExpData((prev) => ({
                     ...prev,
                     chemistry: {
+                        ...prev.chemistry,
                         procedure: {
                             title: phrase,
                             items: items,

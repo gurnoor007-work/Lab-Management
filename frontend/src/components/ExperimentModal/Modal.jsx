@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createPortal, useRef } from "react-dom";
+import { createPortal } from "react-dom";
 import { BasicInfo } from "./BasicInfo";
 import { ChemDetails } from "./Chemistry/ChemDetails";
 import { ExpCreateButton } from "./ExpCreateButton";
@@ -19,32 +19,62 @@ export const Modal = ({ onClose, containerRef }) => {
 
     return createPortal(
         <div className="fixed inset-0 z-50">
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-md" onClick={onClose} />
+            {/* Backdrop */}
+            <div
+                className="absolute inset-0 bg-black/50 backdrop-blur-md"
+                onClick={onClose}
+            />
 
-            <div className="relative flex h-full items-center justify-center">
+            {/* Modal Container */}
+            <div className="relative flex h-full items-center justify-center p-6">
                 <div
-                    className="rounded-xl bg-white p-15 shadow-xl w-[60%] max-h-[90%]"
                     ref={containerRef}
+                    className="w-[60%] h-[90vh] bg-white rounded-xl shadow-xl flex flex-col"
                 >
-                    <div className="input-area overflow-y-auto">
-                        <div className="text-3xl border-b border-gray-200 mb-7">
+                    {/* Header */}
+                    <div className="px-8 py-6 border-b border-gray-200 shrink-0">
+                        <h1 className="text-3xl font-medium">
                             Create Experiment.
-                        </div>
-                        <div className="inputs flex flex-col gap-8">
-                            <BasicInfo data={formData} setData={setFormData} />
-                            <ChemDetails data={formData} setData={setFormData} />
+                        </h1>
+                    </div>
+
+                    {/* Scrollable Content */}
+                    <div className="flex-1 overflow-y-auto px-8 py-6">
+                        <div className="flex flex-col gap-8">
+                            <BasicInfo
+                                data={formData}
+                                setData={setFormData}
+                            />
+
+                            <ChemDetails
+                                data={formData}
+                                setData={setFormData}
+                            />
                         </div>
                     </div>
-                    <div className="submit-buttons select-none">
-                        <div className="buttons flex justify-end gap-3 pt-6 border-t border-gray-200 mt-7">
+
+                    {/* Footer */}
+                    <div className="px-8 py-6 border-t border-gray-200 shrink-0">
+                        <div className="flex justify-end gap-3">
                             <button
-                                className="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-700 font-medium
-                   hover:bg-gray-50 hover:border-gray-400
-                   transition-colors duration-200 hover:cursor-pointer"
                                 onClick={onClose}
+                                className="
+                                    px-5 py-2.5
+                                    rounded-lg
+                                    border border-gray-300
+                                    bg-white
+                                    text-gray-700
+                                    font-medium
+                                    hover:bg-gray-50
+                                    hover:border-gray-400
+                                    transition-colors
+                                    duration-200
+                                    cursor-pointer
+                                "
                             >
                                 Cancel
                             </button>
+
                             <ExpCreateButton data={formData} />
                         </div>
                     </div>

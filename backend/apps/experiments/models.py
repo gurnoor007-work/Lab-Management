@@ -35,12 +35,18 @@ class Experiment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
 def default_procedure():
     return {
         "title": "",
         "items": [],
         "updated_at": None,
     }
+
+
+def default_observation():
+    return {"columns": ["observation", "value"], "rows": [["", ""]]}
+
 
 class ChemistryDetails(models.Model):
     experiment = models.OneToOneField(
@@ -49,7 +55,7 @@ class ChemistryDetails(models.Model):
 
     reaction = models.CharField(max_length=200)
     chemicals = models.JSONField(default=list)
-    
+
     procedure = models.JSONField(default=default_procedure, blank=True)
     # {
     #     "title": "",
@@ -57,3 +63,4 @@ class ChemistryDetails(models.Model):
     #     "updated_at": some_time,
     #     "status": status,
     # }
+    observations = models.JSONField(default=default_observation, blank=True)
