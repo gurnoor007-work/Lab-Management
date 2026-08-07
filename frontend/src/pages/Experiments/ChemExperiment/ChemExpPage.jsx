@@ -8,9 +8,10 @@ import { useExpData } from "../../../context/ExpDataContext";
 
 import { ClipboardList, CheckCircle2, ListChecks, Eye } from "lucide-react";
 import { ProcedureModal } from "../../../components/ChemExp/ActionModals/Procedure/ProcedureModal";
-import { NoPreviewAvailable } from "../NoPreviewAvailable";
+import { NoPreviewAvailable } from "../../../components/NoPreviewAvailable";
 import { StatusCard } from "../../../components/StatusCards/Status";
 import { ObsModal } from "../../../components/ChemExp/ActionModals/Observations/ObsModal";
+import { DataTablePreview } from "../../../components/ChemExp/ActionModals/Observations/DataTablePreview";
 
 export const ChemExpPage = () => {
     const { expData, notFound, forbidden, loading } = useExpData();
@@ -210,7 +211,9 @@ export const ChemExpPage = () => {
                             <StatusCard status={statusList[obsStatus]} />
                         </div>
                     }
-                    preview_elem={<div className="flex flex-col gap-5"></div>}
+                    preview_elem={<div className="flex flex-col gap-5">
+                        <DataTablePreview data={expData.chemistry.observations} n_cols={2} n_rows={3}/>
+                    </div>}
                     bottom_summary={
                         <div className="w-full flex justify-between">
                             <div className="left-portion flex flex-row gap-2 items-center text-md text-gray-700">

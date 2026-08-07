@@ -10,6 +10,7 @@ import { AuthProvider } from "../context/AuthContext";
 import { ExpDataProvider } from "../context/ExpDataContext";
 import { ChemExpPage } from "../pages/Experiments/ChemExperiment/ChemExpPage";
 
+
 function App() {
     return (
         <BrowserRouter>
@@ -18,7 +19,6 @@ function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
-
                     <Route
                         path="/experiment/chemistry/:id"
                         element={

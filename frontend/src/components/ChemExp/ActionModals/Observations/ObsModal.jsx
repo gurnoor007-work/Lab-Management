@@ -36,13 +36,13 @@ export const ObsModal = ({ open, onClose, icon, title, title_status }) => {
 
     return createPortal(
         <div
-            className={`fixed inset-0 z-50 flex items-center justify-center ${
+            className={`fixed inset-0 z-50 flex items-center justify-center px-10 ${
                 open ? "visible bg-black/20 backdrop-blur-xs" : "invisible"
             }`}
             onClick={onClose}
         >
             <div
-                className={`w-4xl h-[75vh] rounded-2xl bg-white shadow-2xl flex flex-col transition-all duration-200 ${
+                className={`max-w-full h-[75vh] rounded-2xl bg-white shadow-2xl flex flex-col transition-all duration-200 ${
                     open ? "opacity-100 scale-100" : "opacity-0 scale-110"
                 }`}
                 onClick={(e) => e.stopPropagation()}
@@ -59,7 +59,7 @@ export const ObsModal = ({ open, onClose, icon, title, title_status }) => {
 
                 {/* Content */}
                 <div className="flex-1 min-h-0 px-8 py-6">
-                    <DataTable />
+                    <DataTable initialData={obsData} onChange={setObsData}/>
                 </div>
 
                 {/* Footer */}
