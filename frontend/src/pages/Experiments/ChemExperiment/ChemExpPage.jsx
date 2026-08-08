@@ -6,12 +6,13 @@ import { ActionCard } from "../../../components/ChemExp/ActionCard";
 
 import { useExpData } from "../../../context/ExpDataContext";
 
-import { ClipboardList, CheckCircle2, ListChecks, Eye } from "lucide-react";
+import { ClipboardList, CheckCircle2, ListChecks, Eye, Calculator } from "lucide-react";
 import { ProcedureModal } from "../../../components/ChemExp/ActionModals/Procedure/ProcedureModal";
 import { NoPreviewAvailable } from "../../../components/NoPreviewAvailable";
 import { StatusCard } from "../../../components/StatusCards/Status";
 import { ObsModal } from "../../../components/ChemExp/ActionModals/Observations/ObsModal";
 import { DataTablePreview } from "../../../components/ChemExp/ActionModals/Observations/DataTablePreview";
+import { CalcModal } from "../../../components/ChemExp/ActionModals/Calculations/CalcModal";
 
 export const ChemExpPage = () => {
     const { expData, notFound, forbidden, loading } = useExpData();
@@ -19,10 +20,10 @@ export const ChemExpPage = () => {
 
     const [showProcedure, setShowProcedure] = useState(false);
     const [showObs, setShowObs] = useState(false);
+    const [showCalc, setShowCalc] = useState(false);
 
     const [procedureStatus, setProcedureStatus] = useState(0);
     const [obsStatus, setObsStatus] = useState(0);
-    const procedureRef = useRef(null);
     const obsRef = useRef(null);
 
     if (loading) {
@@ -211,9 +212,15 @@ export const ChemExpPage = () => {
                             <StatusCard status={statusList[obsStatus]} />
                         </div>
                     }
-                    preview_elem={<div className="flex flex-col gap-5">
-                        <DataTablePreview data={expData.chemistry.observations} n_cols={2} n_rows={3}/>
-                    </div>}
+                    preview_elem={
+                        <div className="flex flex-col gap-5">
+                            <DataTablePreview
+                                data={expData.chemistry.observations}
+                                n_cols={3}
+                                n_rows={3}
+                            />
+                        </div>
+                    }
                     bottom_summary={
                         <div className="w-full flex justify-between">
                             <div className="left-portion flex flex-row gap-2 items-center text-md text-gray-700">
@@ -250,7 +257,72 @@ export const ChemExpPage = () => {
                         title_status={<StatusCard status={statusList[obsStatus]} />}
                     />
                 )}
-                <ActionCard />
+
+                {/* ==========Calculations========== */}
+                <ActionCard
+                    icon={
+                        <div className="w-14 h-14 rounded-xl bg-purple-50 flex items-center justify-center shadow-xs">
+                            <Calculator className="w-7 h-7 text-purple-600" />
+                        </div>
+                    }
+                    title={
+                        <span className="text-2xl font-semibold text-gray-600">Calculations</span>
+                    }
+                    title_status={
+                        <div
+                            className="z-10 hover:scale-105 transition duration-300"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleObsStatus();
+                            }}
+                        >
+                            <StatusCard status={statusList[obsStatus]} />
+                        </div>
+                    }
+                    preview_elem={
+                        <div className="flex flex-col gap-5">
+                            <DataTablePreview
+                                data={expData.chemistry.observations}
+                                n_cols={3}
+                                n_rows={3}
+                            />
+                        </div>
+                    }
+                    bottom_summary={
+                        <div className="w-full flex justify-between">
+                            <div className="left-portion flex flex-row gap-2 items-center text-md text-gray-700">
+                                <ListChecks size="1em" />
+                                <span className="text-sm">
+                                    {procedureSummary.items.length} steps
+                                </span>
+                            </div>
+                            <div className="right-portion flex flex-col gap-1">
+                                <span className="text-xs text-gray-400">Last Updated</span>
+                                <span className="text-sm text-gray-700">
+                                    {formatDateTime(expData.updated_at)}
+                                </span>
+                            </div>
+                        </div>
+                    }
+                    setShowModal={setShowCalc}
+                />
+                {showCalc && (
+                    <CalcModal
+                        open={showCalc}
+                        onClose={() => setShowCalc(false)}
+                        icon={
+                            <div className="w-14 h-14 rounded-xl bg-purple-50 flex items-center justify-center shadow-xs">
+                                <Calculator className="w-7 h-7 text-purple-600" />
+                            </div>
+                        }
+                        title={
+                            <span className="text-2xl font-semibold text-gray-600">
+                                Calculations
+                            </span>
+                        }
+                        title_status={<StatusCard status={statusList[obsStatus]} />}
+                    />
+                )}
                 <ActionCard />
                 <ActionCard />
                 <ActionCard />

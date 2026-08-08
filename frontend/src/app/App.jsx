@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
+import "katex/dist/katex.min.css";
 
 import { HomePage } from "../pages/HomePage";
 import { Login } from "../pages/Login";
